@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Search</title>
+    <style>
+      /* Style for the search input */
+      #search-box {
+        width: 300px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      /* Style for the search results container */
+      #search-results {
+        max-width: 600px;
+      }
+
+      /* Style for individual search result items */
+      .result-item {
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      /* Style for result item titles */
+      .result-item h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+      }
+
+      /* Style for result item snippets */
+      .result-item p {
+        font-size: 14px;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="search-box" placeholder="Search..." />
+    <div id="search-results"></div>
+
+    <script>
+      // JavaScript code for search functionality (as provided in the previous response)
+      //   const apiKey = "AIzaSyANNZA3q8-o3ysnFGedYE8AqSWrLAZBHtg";
+      const apiKey = "AIzaSyAHOD-hz9wLBt1T-9xuD86Aq1X3NkwUh8g";
+      const searchBox = document.getElementById("search-box");
+      const searchResults = document.getElementById("search-results");
+
+      function debounce(func, delay) {
+        let timeoutId;
+
+        return function () {
+          const context = this;
+          const args = arguments;
+
+          clearTimeout(timeoutId);
+
+          timeoutId = setTimeout(function () {
+            func.apply(context, args);
+          }, delay);
+        };
+      }
+      const debouncedSearch = debounce(search, 1500);
+
+      document
+        .getElementById("search-box")
+        .addEventListener("input", debouncedSearch);
+
+      async function search() {
+        console.log("debounce triggered");
+        const query = searchBox.value;
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=d3c06fa4526a44f1b&q=${query}`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          // Process and display search results in 'search-results' container.
+          searchResults.innerHTML = ""; // Clear previous results
+          data.items.forEach((item) => {
+            const resultItem = document.createElement("div");
+            resultItem.innerHTML = `<h3><a href="${item.link}">${item.title}</a></h3><p>${item.snippet}</p>`;
+            searchResults.appendChild(resultItem);
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+    </script>
+  </body>
+</html>
